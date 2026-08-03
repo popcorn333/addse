@@ -89,47 +89,25 @@ extra_callbacks:
 
 eval:
   dsets:
-    libri-tut:
+    vctk-demand:
       _target_: addse.data.DynamicMixingDataset
       length: 1000
       resume: false
       reset_rngs: true
-      rms_range: [0.0, 0.0]
       speech_dataset:
         _target_: addse.data.AudioStreamingDataset
-        input_dir: hf://datasets/philgzl/libri/data/test-*.parquet
+        input_dir: data/chunks/vctk-demand/test_speech/
         fs: ${fs}
         segment_length: null
         max_length: 20.0
         shuffle: true
       noise_dataset:
         _target_: addse.data.AudioStreamingDataset
-        input_dir: hf://datasets/philgzl/tut2020/data/eval-*.parquet
+        input_dir: data/chunks/vctk-demand/test_noise/
         fs: ${fs}
         segment_length: null
         max_length: 20.0
         shuffle: true
-    clarity-fsd50k:
-      _target_: addse.data.DynamicMixingDataset
-      length: 1000
-      resume: false
-      reset_rngs: true
-      rms_range: [0.0, 0.0]
-      speech_dataset:
-        _target_: addse.data.AudioStreamingDataset
-        input_dir: data/chunks/clarity/
-        fs: ${fs}
-        segment_length: null
-        max_length: 20.0
-        shuffle: true
-      noise_dataset:
-        _target_: addse.data.AudioStreamingDataset
-        input_dir: hf://datasets/philgzl/fsd50k/data/eval-*.parquet
-        fs: ${fs}
-        segment_length: null
-        max_length: 20.0
-        shuffle: true
-        max_dynamic_range: 20.0
   metrics:
     sdr:
       _target_: addse.metrics.SDRMetric

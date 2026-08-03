@@ -91,10 +91,9 @@ eval:
   dsets:
     vctk-demand:
       _target_: addse.data.DynamicMixingDataset
-      length: 1000
+      length: .inf
       resume: false
       reset_rngs: true
-      rms_range: [0.0, 0.0]
       speech_dataset:
         _target_: addse.data.AudioStreamingDataset
         input_dir: data/chunks/vctk-demand/test_speech/

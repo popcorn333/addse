@@ -272,6 +272,16 @@ def iterate_and_compute_metrics(
                 os.makedirs(output_dir, exist_ok=True)
                 y_hat_path = os.path.join(output_dir, f"{dset_name}_{idx:06d}_{name}.wav")
                 sf.write(y_hat_path, y_hat_np.T / peak, fs)
+                inference_path = os.path.join(output_dir, f"{dset_name}_{idx:06d}_{name}.npz")
+                np.savez_compressed(
+                    inference_path,
+                    estimate=y_hat_np,
+                    target=y_np,
+                    fs=np.asarray(fs),
+                    dset=np.asarray(dset_name),
+                    idx=np.asarray(idx),
+                    name=np.asarray(name),
+                )
 
             metric_values_nomp = {}
             if metrics_nomp:
