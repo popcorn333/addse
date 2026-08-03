@@ -1,0 +1,58 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%labels
+    Author addse
+    Description Ubuntu 24.04, Python 3.12, and uv runtime for host-mounted addse repo
+
+%post
+    set -eux
+    export TMPDIR=/tmp
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        espeak-ng \
+        ffmpeg \
+        git \
+        libespeak-ng1 \
+        libgomp1 \
+        libstdc++6 \
+        libsndfile1 \
+        locales \
+        pkg-config \
+        python3.12 \
+        python3.12-dev \
+        python3.12-venv
+
+    locale-gen C.UTF-8
+    ln -sf /usr/bin/python3.12 /usr/local/bin/python
+    ln -sf /usr/bin/python3.12 /usr/local/bin/python3
+    mkdir -p /workspace/addse /cache_temp /mnt/parscratch
+
+    curl -LsSf https://astral.sh/uv/install.sh -o /tmp/install-uv.sh
+    UV_INSTALL_DIR=/usr/local/bin sh /tmp/install-uv.sh
+    rm -f /tmp/install-uv.sh
+
+    python --version
+    uv --version
+
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    export PATH=/usr/local/bin:$PATH
+    export TMPDIR=/cache_temp/tmp
+    export UV_CACHE_DIR=/cache_temp/uv-cache
+    export HF_HOME=/cache_temp/hf-cache
+    export TORCH_HOME=/cache_temp/torch-cache
+    export UV_LINK_MODE=copy
+
+%runscript
+    cd /workspace/addse
+    exec "$@"

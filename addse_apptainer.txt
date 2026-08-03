@@ -1,0 +1,122 @@
+ADDSE Apptainer runtime configuration
+====================================
+
+Successful bignoise generation
+------------------------------
+
+Date run: 2026-06-03
+Host repo root:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse
+
+Container repo root:
+  /workspace/addse
+
+Apptainer image:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse/addse.sif
+
+Script run:
+  ./ldopt_bignoise.sh
+
+Generated output:
+  Host path:      /mnt/parscratch/users/acp23xt/private/codex_addse/addse/data/chunks/bignoise
+  Container path: /workspace/addse/data/chunks/bignoise
+
+The run completed successfully and produced chunk-*.bin files plus index.json.
+
+
+Exact successful host command
+-----------------------------
+
+Run from:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse
+
+Command:
+  env \
+    TMPDIR=/mnt/parscratch/users/acp23xt/private/cache_temp/tmp \
+    APPTAINER_TMPDIR=/mnt/parscratch/users/acp23xt/private/apptainer_tmp \
+    APPTAINER_CACHEDIR=/mnt/parscratch/users/acp23xt/private/apptainer_cache \
+    APPTAINER_BINDPATH=/mnt/parscratch:/mnt/parscratch,/mnt/parscratch/users/acp23xt/private/codex_addse/addse:/workspace/addse \
+    apptainer run addse.sif ./ldopt_bignoise.sh
+
+
+Required host paths
+-------------------
+
+Project/repo:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse
+
+Apptainer image:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse/addse.sif
+
+Host temp directory for Apptainer:
+  /mnt/parscratch/users/acp23xt/private/cache_temp/tmp
+
+Host Apptainer temporary build/runtime directory:
+  /mnt/parscratch/users/acp23xt/private/apptainer_tmp
+
+Host Apptainer image/cache directory:
+  /mnt/parscratch/users/acp23xt/private/apptainer_cache
+
+Input datasets used by ldopt_bignoise.sh:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse/data/external/WHAM_48kHz
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse/data/external/DEMAND
+
+Output dataset:
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse/data/chunks/bignoise
+
+
+Bind paths
+----------
+
+APPTAINER_BINDPATH value used successfully:
+  /mnt/parscratch:/mnt/parscratch,/mnt/parscratch/users/acp23xt/private/codex_addse/addse:/workspace/addse
+
+Meaning:
+  /mnt/parscratch:/mnt/parscratch
+    Makes the shared scratch filesystem visible at the same path inside the container.
+
+  /mnt/parscratch/users/acp23xt/private/codex_addse/addse:/workspace/addse
+    Mounts this repo at the container path expected by the image runscript.
+
+
+Container image settings from apptainer/addse.def
+-------------------------------------------------
+
+Base image:
+  ubuntu:24.04
+
+The image runscript does:
+  cd /workspace/addse
+  exec "$@"
+
+Important environment variables defined inside the image:
+  LC_ALL=C.UTF-8
+  LANG=C.UTF-8
+  PATH=/usr/local/bin:$PATH
+  TMPDIR=/cache_temp/tmp
+  UV_CACHE_DIR=/cache_temp/uv-cache
+  HF_HOME=/cache_temp/hf-cache
+  TORCH_HOME=/cache_temp/torch-cache
+  UV_LINK_MODE=copy
+
+Important installed system packages include:
+  Python 3.12
+  uv
+  ffmpeg
+  espeak-ng
+  libsndfile1
+  build-essential
+  git
+
+
+Why Apptainer is needed here
+----------------------------
+
+Running ./ldopt_bignoise.sh directly on the host failed because uv attempted to
+resolve onnxruntime==1.23.2 for a host platform without a compatible wheel.
+
+Running the existing .venv directly on the host also failed because its installed
+onnxruntime binary requires GLIBC_2.27, while the host provides an older glibc.
+
+The Apptainer image uses Ubuntu 24.04, so the existing project environment works
+there and ./ldopt_bignoise.sh can complete.
